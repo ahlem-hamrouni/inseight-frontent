@@ -104,17 +104,17 @@ export default function Quizzes() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className={`text-2xl font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>My Quizzes <span className="text-sm font-normal text-slate-400">· Test yourself</span></h1>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <input type="text" placeholder="Search quiz..." value={search} onChange={(e) => setSearch(e.target.value)} className={`w-full sm:w-64 px-4 py-2 text-sm rounded-xl border focus:outline-none ${isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`} />
-          {user?.role !== 'student' && <button onClick={() => handleOpenModal()} className="shrink-0 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm">New Quiz</button>}
-        </div>
-      </div>
+      
+      
 
-      <div className={`p-6 rounded-3xl border shadow-sm ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-        <DataTable title="" buttonText={null} columns={columns} data={quizzes} loading={loading} />
-      </div>
+      <DataTable
+       title={user?.role === 'admin' ? 'ALL quizzes' : 'My Quizzes' }
+       buttonText={user?.role === 'admin' ? 'New quiz' : null}
+        onButtonClick={() => handleOpenModal()}
+        searchValue={search}
+        onSearchChange={(e) => setSearch(e.target.value)}
+        searchPlaceholder="Search quiz..."
+        columns={columns} data={quizzes} loading={loading} />
 
       <Pagination page={page} pages={pages} onPageChange={setPage} />
 

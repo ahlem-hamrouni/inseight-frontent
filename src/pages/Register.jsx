@@ -16,6 +16,7 @@ function Register() {
     phone: '',
     studentCode: '',
     level: 'L1',
+    group:'',
     birthDate: '',
     speciality: '',
     office: ''
@@ -174,7 +175,17 @@ function Register() {
                   <option value="M2">M2</option>
                 </select>
               </div>
-
+              <div>
+                <label className="block text-xs text-cyan-400 mb-1">Group</label>
+                <input
+                  type="text"
+                  name="studentCode"
+                  value={formData.group}
+                  onChange={handleChange}
+                  placeholder="G1"
+                  className="w-full p-2.5 rounded bg-[#0b0f19] border border-gray-800 text-white text-sm outline-none"
+                />
+              </div>
               <div>
                 <label className="block text-xs text-cyan-400 mb-1">Birth Date</label>
                 <input

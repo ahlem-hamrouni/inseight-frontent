@@ -8,8 +8,11 @@ import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import StudentDashboard from './pages/student/StudentDashboard';
 import Courses from './pages/Courses';
 import Quizzes from './pages/Quizzes';
-import Users from './pages/Users';
+import Users from './pages/User/Users';
+import Documents from './pages/Documents';
+import Departements from'./pages/Departements';
 
+import CourseDetails from'./pages/CourseDetails/CourseDetails';
 
 function App() {
   return (
@@ -32,6 +35,13 @@ function App() {
         <Route path="admin/Quizzes" element={<Quizzes />} />
         <Route path="admin/Users" element={<Users />} />
         <Route path="teacher/Users" element={<Users />} />
+        <Route path="teacher/Docs" element={<Documents />} />
+        <Route path="admin/Docs" element={<Documents />} />
+        <Route path="student/Docs" element={<Documents />} />
+        <Route path="admin/Dept" element={<Departements/>} />
+        <Route path="teacher/courses/:courseId" element={<CourseDetails />} />
+        <Route path="student/courses/:courseId" element={<CourseDetails />} />
+        <Route path="admin/courses/:courseId" element={<CourseDetails />} />
         
       </Route>
     </Routes>

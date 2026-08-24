@@ -1,14 +1,25 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 
-export default function DataTable({ title, buttonText, onButtonClick, columns, data = [], loading }) {
+export default function DataTable({ 
+  title, 
+  buttonText, 
+  onButtonClick, 
+  columns, 
+  data = [], 
+  loading, 
+  onRowClick,
+  searchValue,     // 👈 Nouveau prop
+  onSearchChange,  // 👈 Nouveau prop
+  searchPlaceholder = 'Rechercher...'
+}) {
   const { theme } = useAuth();
   const isDark = theme === 'dark';
 
   return (
     <div className="space-y-4">
-      {(title || buttonText) && (
-        <div className="flex justify-between items-center mb-2">
+      {(title || buttonText || onSearchChange) && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
           {title && (
             <h2 className={`text-lg font-bold tracking-wide ${
               isDark ? 'text-white' : 'text-slate-900'
@@ -17,17 +28,33 @@ export default function DataTable({ title, buttonText, onButtonClick, columns, d
             </h2>
           )}
           
-          {buttonText && (
-            <button 
-              onClick={onButtonClick}
-              className="ml-auto bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20"
-            >
-              + {buttonText}
-            </button>
-          )}
+          
+          <div className="flex items-center gap-3 ml-auto w-full sm:w-auto">
+            {onSearchChange && (
+              <input
+                type="text"
+                placeholder={searchPlaceholder}
+                value={searchValue || ''}
+                onChange={onSearchChange}
+                className={`w-full sm:w-64 px-4 py-2 text-xs rounded-xl border focus:outline-none transition-colors ${
+                  isDark 
+                    ? 'bg-[#0B132B] border-slate-800 text-white placeholder-slate-500 focus:border-blue-500' 
+                    : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-blue-500'
+                }`}
+              />
+            )}
+
+            {buttonText && (
+              <button 
+                onClick={onButtonClick}
+                className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20"
+              >
+                + {buttonText}
+              </button>
+            )}
+          </div>
         </div>
       )}
-      
       
       <div className={`border rounded-2xl p-6 shadow-xl backdrop-blur-sm transition-colors duration-200 ${
         isDark 
@@ -65,7 +92,10 @@ export default function DataTable({ title, buttonText, onButtonClick, columns, d
                   data.map((row, idx) => (
                     <tr 
                       key={row._id || idx} 
+                      onClick={() => onRowClick && onRowClick(row)}
                       className={`transition-colors ${
+                        onRowClick ? 'cursor-pointer' : ''
+                      } ${
                         isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'
                       }`}
                     >

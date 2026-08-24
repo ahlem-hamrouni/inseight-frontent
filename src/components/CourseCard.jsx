@@ -11,6 +11,7 @@ export default function CourseCard({
   navigate,
 }) {
   const courseId = String(course._id || course.id);
+  const isManagement = user?.role === 'teacher' || user?.role === 'admin';
 
   return (
     <div
@@ -18,7 +19,16 @@ export default function CourseCard({
         isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-100 text-slate-900'
       }`}
     >
-      <div className="h-44 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
+      <div 
+        onClick={() => {
+          if (isManagement) {
+            navigate(`/${user?.role}/courses/${courseId}`);
+          }
+        }}
+        className={`h-44 w-full overflow-hidden bg-slate-100 dark:bg-slate-900 ${
+          isManagement ? 'cursor-pointer' : 'cursor-default'
+        }`}
+      >
         <img
           src={
             course.image && course.image.startsWith('http')
@@ -42,18 +52,22 @@ export default function CourseCard({
                 <button
                   onClick={() => handleOpenEdit(course)}
                   className="text-xs text-blue-500 hover:text-blue-400 font-medium transition-colors"
-                > Edit </button>
+                >
+                  Edit
+                </button>
                 <button
                   onClick={() => handleDelete(courseId)}
                   className="text-xs text-red-500 hover:text-red-400 font-medium transition-colors"
-                > Delete </button>
+                >
+                  Delete
+                </button>
               </div>
             ) : (
               <div className="flex flex-col items-end shrink-0">
                 {isEnrolled ? (
                   <>
                     <button
-                      onClick={() => navigate(`/courses/${courseId}`)}
+                      onClick={() => navigate(`/${user?.role}/courses/${courseId}`)}
                       className="text-xs text-blue-500 hover:text-blue-400 font-medium transition-colors"
                     >
                       Continue
@@ -83,18 +97,6 @@ export default function CourseCard({
             {course.description || 'No description available for this course.'}
           </p>
         </div>
-
-        
-        {user?.role === 'student' && isEnrolled && (
-          <div className="pt-2">
-            <button
-              onClick={() => navigate(`/courses/${courseId}`)}
-              className="w-full py-2 px-3 rounded-xl bg-blue-600/10 text-blue-500 hover:bg-blue-600/20 text-xs font-medium transition-colors text-center block"
-            >
-              View Course Content →
-            </button>
-          </div>
-        )}
 
         <div className="pt-3 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
           <span className="font-medium bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">

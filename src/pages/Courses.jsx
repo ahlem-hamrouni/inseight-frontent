@@ -14,12 +14,7 @@ export default function Courses() {
   const isDark = theme === 'dark';
 
   const [courses, setCourses] = useState([]);
-  const [enrolledCourseIds, setEnrolledCourseIds] = useState(() => {
-    try {
-      const saved = localStorage.getItem(`enrolled_courses_${user?._id || user?.id || 'guest'}`);
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
-  });
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -33,10 +28,6 @@ export default function Courses() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  useEffect(() => {
-    if (user) localStorage.setItem(`enrolled_courses_${user._id || user.id || 'guest'}`, JSON.stringify(enrolledCourseIds));
-  }, [enrolledCourseIds, user]);
-
   const loadCourses = async () => {
     try {
       setLoading(true);
@@ -44,7 +35,8 @@ export default function Courses() {
       const fetchedCourses = Array.isArray(res.data) ? res.data : (res.data?.data || res.data?.courses || res.data?.cours || []);
       const totalPages = res.data?.pages || res.data?.totalPages || 1;
       const backendEnrolledIds = fetchedCourses.filter(c => c.isEnrolled).map(c => String(c._id || c.id));
-      if (backendEnrolledIds.length > 0) setEnrolledCourseIds((prev) => Array.from(new Set([...prev, ...backendEnrolledIds])));
+     setEnrolledCourseIds(backendEnrolledIds);
+      
       setCourses(fetchedCourses); setPages(totalPages);
     } catch (err) {
       console.error('Error loading courses:', err); setCourses([]);
@@ -111,13 +103,19 @@ export default function Courses() {
 
   const handleEnroll = async (course) => {
     const cId = String(course._id || course.id);
+    const studentId = user?._id || user?.id;
     setEnrolledCourseIds((prev) => Array.from(new Set([...prev, cId])));
     try {
-      await api.post('/courses/${courseId}'/enroll, { student: user?._id || user?.id, course: cId, status: 'active' });
-    } catch (err) {
+      await api.post('/inscriptions/ajouter', { 
+        student: studentId, 
+        course: cId, 
+        status: 'active'})  
+    }catch (err) {
       console.error('Backend enrollment error:', err);
-      try { await api.post(`/courses/${cId}/enroll`); } catch (e) { console.error('Fallback enroll error:', e); }
+      setEnrolledCourseIds((prev) => prev.filter(id => id !== cId));
+      alert(err.response?.data?.message || "Erreur lors de l'inscription au cours.");
     }
+   
   };
 
   return (

@@ -9,20 +9,25 @@ const menusByRole = {
   teacher: [
     { label: 'Dashboard', link: '/teacher/TeacherDashboard' },
     { label: 'Courses', link: '/teacher/courses' },
-    { label: 'Quizzes et Exams', link: '/teacher/Quizzes' },
-    { label: 'Students', link: '/teacher/Users' },
+    { label: 'Quizzes et Exams', link: '/teacher/quizzes' },
+    { label: 'Students', link: '/teacher/users' },
+    { label: 'Documents', link: '/teacher/docs' },
 
   ],
   student: [
     { label: 'Dashboard', link: '/student/StudentDashboard' },
     { label: 'Courses', link: '/student/courses' },
     { label: 'Quizzes & Exams', link: '/student/quizzes' },
+    { label: 'Documents', link: '/student/docs' },
   ],
   admin: [
     { label: 'Dashboard', link: '/admin/AdminDashboard' },
     { label: 'Courses', link: '/admin/courses' },
     { label: 'Quizzes & Exams', link: '/admin/quizzes' },
     { label: 'Users', link: '/admin/users' },
+    { label: 'Documents', link: '/admin/docs' },
+    { label: 'Departments', link: '/admin/dept' },
+
 
   ]
 };

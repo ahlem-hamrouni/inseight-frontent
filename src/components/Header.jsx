@@ -10,9 +10,10 @@ export default function Header() {
   const getHeaderTitle = () => {
     const path = location.pathname;
     const isStudent = user?.role === 'student';
+    const isTeacher = user?.role ==='teacher';
 
     if (path.includes('/quizzes/') && !path.endsWith('/quizzes')) {
-  return {
+    return {
     title: 'Quizzes & Exams',
     subtitle: 'Take exams and view your grades'
   };
@@ -38,13 +39,24 @@ export default function Header() {
     }
 
    
-    if (path.includes('/students')) {
+    if (path.includes('/users')) {
       return {
-        title: 'Students',
-        subtitle: 'List of enrolled students'
+        title: isTeacher 
+        ? ' My students'
+        : " All users"
+        
       };
     }
-
+    if ( path.includes('/docs')){
+      return { 
+        title: 'Documents'
+      };
+    }
+    if ( path. includes('dept')){
+      return{
+        title:"Departments"
+      }
+    }
    
     return {
       title: 'Dashboard',

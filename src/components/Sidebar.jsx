@@ -5,7 +5,7 @@ import ProfileModal from './ProfileModal';
 
 export default function Sidebar({ menus, title }) {
   const { user, logout, theme, toggleTheme } = useAuth();
-  
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const isDark = theme === 'dark';
 
@@ -18,11 +18,10 @@ export default function Sidebar({ menus, title }) {
 
   return (
     <>
-      <aside className={`w-full p-6 flex flex-col justify-between lg:min-h-screen lg:w-72 border-r transition-all duration-300 ${
+      <aside className={`w-full p-6 flex flex-col justify-between lg:sticky lg:top-0 lg:h-screen lg:w-72 border-r transition-all duration-300 overflow-y-auto shrink-0 ${
         isDark ? 'bg-[#0B132B] text-slate-300 border-slate-800' : 'bg-white text-slate-700 border-slate-200 shadow-sm'
       }`}>
         <div>
-          
           <div className="flex items-center gap-3 mb-8">
             <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-lg shadow-blue-600/30">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +47,6 @@ export default function Sidebar({ menus, title }) {
             </h2>
           </div>
 
-         
           <nav className="space-y-1.5">
             {menus?.map((item) => (
               <NavLink
@@ -70,9 +68,7 @@ export default function Sidebar({ menus, title }) {
           </nav>
         </div>
 
-        
         <div className={`pt-6 mt-6 border-t space-y-4 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-          
           <div 
             onClick={() => setIsProfileOpen(true)}
             className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-all ${
@@ -82,7 +78,7 @@ export default function Sidebar({ menus, title }) {
             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${
               isDark ? 'bg-slate-800 text-white border border-slate-700' : 'bg-slate-200 text-slate-800'
             }`}>
-            {getInitials()}          
+              {getInitials()}          
             </div>
             <div className="text-xs overflow-hidden flex-1">
               <p className={`font-semibold truncate ${isDark ? 'text-white' : 'text-slate-800'}`}>
@@ -96,7 +92,6 @@ export default function Sidebar({ menus, title }) {
             </div>
           </div>
 
-        
           <button
             type="button"
             onClick={toggleTheme}
@@ -109,7 +104,6 @@ export default function Sidebar({ menus, title }) {
             {isDark ? '☀️ Light Mode' : '🌙 Dark Mode'}
           </button>
 
-          
           <button
             onClick={logout}
             className="flex items-center gap-2.5 px-3 py-1.5 text-xs font-semibold text-red-500 hover:text-red-400 transition-colors w-full"
