@@ -43,7 +43,7 @@ export default function DashboardLayout() {
     <div className={`min-h-screen flex transition-colors duration-200 ${
       isDark ? 'bg-[#060B19] text-white' : 'bg-slate-100 text-slate-900'
     }`}>
-      
+
       <Sidebar menus={currentMenus} title={currentRole.toUpperCase()} />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">

@@ -5,6 +5,7 @@ import DataTable from '../components/DataTable';
 import Pagination from '../components/Pagination';
 import { useAuth } from '../context/AuthContext';
 
+
 const initialForm = { title: '', course: '', duration: '', passingScore: 50 };
 
 export default function Quizzes() {
@@ -86,11 +87,31 @@ export default function Quizzes() {
     { header: 'Duration', render: (r) => r.duration ? `${r.duration} min` : '-' },
     { header: 'Questions', render: (r) => r.questionsCount ?? 0 },
     { header: 'Passing Score', render: (r) => `${r.passingScore || 50}%` },
-    { header: 'Action', align: 'right', render: (r) => <button onClick={() => navigate(`/student/quizzes/${r._id}`)} className="bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium text-xs px-4 py-1.5 rounded-full dark:bg-blue-500/10 dark:text-blue-400">Start</button> }
-  ] : [
+    { header: 'Action', align: 'right', render: (r) =>(
+      <div className="flex items-center justify-end gap-2">
+        {r.lastAttemptId ? (
+          <button 
+            onClick={() => navigate(`/student/attempts/${r.lastAttemptId}`)} 
+            className="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-medium text-xs px-4 py-1.5 rounded-full dark:bg-emerald-500/10 dark:text-emerald-400"
+          >
+            Résultat
+          </button>
+        ) : (
+          <button 
+            onClick={() => navigate(`/student/quizzes/${r._id}`)} 
+            className="bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium text-xs px-4 py-1.5 rounded-full dark:bg-blue-500/10 dark:text-blue-400"
+          >
+            Start
+          </button>
+        )}
+      </div>
+    ) 
+  }
+] : [
     { header: 'Quiz Title', render: (r) => <span onClick={() => navigate(`/teacher/quizzes/${r._id}/questions`)} className={`font-semibold cursor-pointer hover:underline hover:text-blue-400 ${isDark ? 'text-white' : 'text-slate-900'}`}>{r.title}</span> },
     { header: 'Course', render: (r) => r.course?.title || r.course?.titre || '-' },
     { header: 'Duration', render: (r) => r.duration ? `${r.duration} min` : '-' },
+    { header: 'Questions', render: (r) => r.questionsCount ?? 0 },
     { header: 'Passing Score', render: (r) => `${r.passingScore || 50}%` },
     { header: 'Status', render: (r) => <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${r.isPublished ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}`}>{r.isPublished ? 'Published' : 'Draft'}</span> },
     { header: 'Actions', align: 'right', render: (r) => (

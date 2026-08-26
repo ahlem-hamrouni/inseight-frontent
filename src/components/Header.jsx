@@ -29,6 +29,7 @@ export default function Header() {
     }
 
     
+  
     if (path.includes('/quizzes')) {
       return {
         title: 'Quizzes & Exams',

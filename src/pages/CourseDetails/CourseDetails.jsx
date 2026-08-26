@@ -145,7 +145,6 @@ export default function CourseDetails() {
   };
 
   const handleDeleteModule = async (e, moduleId) => {
-    e.stopPropagation();
     if (window.confirm('Are you sure you want to delete this module?')) {
       try {
         await api.delete(`/modules/${moduleId}`);

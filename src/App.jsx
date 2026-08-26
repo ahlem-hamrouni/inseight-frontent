@@ -11,6 +11,10 @@ import Quizzes from './pages/Quizzes';
 import Users from './pages/User/Users';
 import Documents from './pages/Documents';
 import Departements from'./pages/Departements';
+import TakeQuiz from './pages/QuestionsDetails/TakeQuiz';
+import ManageQuizQuestions from './pages/QuestionsDetails/ManageQuizQuestions';
+import ViewAttemptResult from './pages/QuestionsDetails/ViewAttemptResult';
+
 
 import CourseDetails from'./pages/CourseDetails/CourseDetails';
 
@@ -42,6 +46,9 @@ function App() {
         <Route path="teacher/courses/:courseId" element={<CourseDetails />} />
         <Route path="student/courses/:courseId" element={<CourseDetails />} />
         <Route path="admin/courses/:courseId" element={<CourseDetails />} />
+        <Route path="/student/Quizzes/:id" element={<TakeQuiz />} />
+        <Route path="/teacher/Quizzes/:quizId/questions" element={<ManageQuizQuestions />} />
+        <Route path="/student/attempts/:attemptId" element={<ViewAttemptResult />} />
         
       </Route>
     </Routes>
