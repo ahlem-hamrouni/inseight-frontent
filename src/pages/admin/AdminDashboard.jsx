@@ -50,6 +50,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchData();
   }, [selectedLevel, selectedStatus]);
+  const rawScore = Number(stats.averageScore || 0);
+  const percentageScore = (rawScore * 5).toFixed(2);
 
   return (
     <div className="p-6 space-y-6">
@@ -57,7 +59,6 @@ export default function AdminDashboard() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Statistical Overview</h1>
-          <p className="text-slate-400 text-sm">ACADEMIC YEAR 2026</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -92,7 +93,7 @@ export default function AdminDashboard() {
         <StatCard title="Total Students" value={stats.totalStudents || 0} />
         <StatCard title="Active Students" value={stats.activeStudents || 0} />
         <StatCard title="Inactive Students" value={stats.inactiveStudents || 0} />
-        <StatCard title="Overall Average" value={`${stats.averageScore || 0}%`} />
+        <StatCard title=" Average Score" value={`${percentageScore}%`} />
       </div>
 
      

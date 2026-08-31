@@ -13,6 +13,8 @@ export default function CourseCard({
   const courseId = String(course._id || course.id);
   const isManagement = user?.role === 'teacher' || user?.role === 'admin';
 
+  const isCompleted = course.isCompleted || course.enrollmentStatus === 'completed';
+
   return (
     <div
       className={`group flex flex-col rounded-3xl overflow-hidden border shadow-sm transition hover:shadow-md ${
@@ -64,7 +66,20 @@ export default function CourseCard({
               </div>
             ) : (
               <div className="flex flex-col items-end shrink-0">
-                {isEnrolled ? (
+               
+                {isCompleted ? (
+                  <>
+                    <button
+                      onClick={() => navigate(`/${user?.role}/courses/${courseId}`)}
+                      className="text-xs text-emerald-600 hover:text-emerald-500 font-medium transition-colors"
+                    >
+                      Review
+                    </button>
+                    <span className="text-[10px] text-emerald-500 mt-0.5 font-bold">
+                      Completed ✓
+                    </span>
+                  </>
+                ) : isEnrolled ? (
                   <>
                     <button
                       onClick={() => navigate(`/${user?.role}/courses/${courseId}`)}

@@ -13,8 +13,8 @@ export default function TakeQuiz() {
   const [questions, setQuestions] = useState([]);
   const [choicesMap, setChoicesMap] = useState({}); 
   const [answers, setAnswers] = useState({}); 
-  const [attemptId, setAttemptId] = useState(null);
-  
+  const [startedAt] = useState(new Date()); 
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -23,18 +23,19 @@ export default function TakeQuiz() {
   const [resultSummary, setResultSummary] = useState(null); 
 
   useEffect(() => {
-    const fetchQuizDataAndStartAttempt = async () => {
+    const fetchQuizData = async () => {
       try {
         setLoading(true);
+
+       
         const quizRes = await api.get(`/quizzes/${quizId}`);
         const fetchedQuiz = quizRes.data?.quiz || quizRes.data;
         setQuiz(fetchedQuiz);
+
         if (fetchedQuiz?.duration) {
           setTimeLeft(fetchedQuiz.duration * 60);
         }
-        const attemptRes = await api.post(`/attempts/start/${quizId}`);
-        const currentAttempt = attemptRes.data?.data || attemptRes.data;
-        setAttemptId(currentAttempt._id);
+
         const qRes = await api.get(`/questions/${quizId}`);
         const questionsList = Array.isArray(qRes.data) ? qRes.data : [];
         setQuestions(questionsList);
@@ -45,20 +46,20 @@ export default function TakeQuiz() {
             const cRes = await api.get(`/choices/${q._id}`);
             choicesObj[q._id] = Array.isArray(cRes.data) ? cRes.data : [];
           } catch (cErr) {
-            console.error(`Erreur choices question ${q._id}:`, cErr);
+            console.error(`Error loading choices for question ${q._id}:`, cErr);
             choicesObj[q._id] = [];
           }
         }
         setChoicesMap(choicesObj);
 
       } catch (err) {
-        console.error('Erreur chargement quiz data:', err);
+        console.error('Error loading quiz data:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (quizId) fetchQuizDataAndStartAttempt();
+    if (quizId) fetchQuizData();
   }, [quizId]);
 
   useEffect(() => {
@@ -111,7 +112,7 @@ export default function TakeQuiz() {
   };
 
   const handleSubmitAuto = () => {
-    alert('Le temps est écoulé ! Le quiz sera soumis automatiquement.');
+    alert('Time is up! Your quiz will be submitted automatically.');
     executeSubmit();
   };
 
@@ -121,7 +122,7 @@ export default function TakeQuiz() {
   };
 
   const executeSubmit = async () => {
-    if (!attemptId || submitting) return;
+    if (submitting) return;
 
     setSubmitting(true);
     try {
@@ -134,14 +135,21 @@ export default function TakeQuiz() {
         };
       });
 
-      const res = await api.post(`/attempts/${attemptId}/submit`, {
+      const res = await api.post(`/attempts/submit/${quizId}`, {
+        startedAt,
         answers: formattedAnswers
       });
 
+      if (res.data?.isEmpty) {
+        alert('Aucune réponse enregistrée.');
+        navigate('/student/quizzes');
+        return;
+      }
+
       setResultSummary(res.data);
     } catch (err) {
-      console.error('Erreur lors de la soumission:', err);
-      alert('Erreur lors de l\'enregistrement des réponses.');
+      console.error('Error during submission:', err);
+      alert('Error submitting your answers.');
     } finally {
       setSubmitting(false);
     }
@@ -150,12 +158,11 @@ export default function TakeQuiz() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <span className={isDark ? 'text-white' : 'text-slate-800'}>Chargement du quiz...</span>
+        <span className={isDark ? 'text-white' : 'text-slate-800'}>Loading quiz...</span>
       </div>
     );
   }
 
- 
   if (resultSummary) {
     const score = resultSummary.attempt?.score ?? resultSummary.score ?? 0;
     const submittedAnswers = resultSummary.answers || [];
@@ -165,21 +172,20 @@ export default function TakeQuiz() {
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-100 text-slate-900 shadow-sm'
       }`}>
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Résultat du Quiz</h2>
+          <h2 className="text-2xl font-bold">Quiz Results</h2>
           <div className="p-6 rounded-2xl bg-blue-500/10 border border-blue-500/20 max-w-xs mx-auto">
-            <p className="text-sm text-slate-400 mb-1">Votre Score Final</p>
+            <p className="text-sm text-slate-400 mb-1">Your Final Score</p>
             <p className="text-4xl font-extrabold text-blue-500">{score} pts</p>
           </div>
         </div>
 
-        
         {submittedAnswers.length > 0 && (
           <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
-            <h3 className="text-lg font-semibold mb-2">Détails de vos réponses:</h3>
+            <h3 className="text-lg font-semibold mb-2">Answer Details:</h3>
             {submittedAnswers.map((ans, idx) => {
               const qText = ans.question?.statement || `Question ${idx + 1}`;
               const isCorrect = ans.isCorrect;
-              const userChoice = ans.selectedChoice?.text || ans.textAnswer || "Pas de réponse";
+              const userChoice = ans.selectedChoice?.text || ans.textAnswer || "No answer provided";
 
               return (
                 <div 
@@ -200,7 +206,7 @@ export default function TakeQuiz() {
                   </div>
 
                   <p className="text-sm text-slate-500 dark:text-slate-400">
-                    <span className="font-medium text-slate-700 dark:text-slate-300">Votre réponse: </span> 
+                    <span className="font-medium text-slate-700 dark:text-slate-300">Your answer: </span> 
                     {userChoice}
                   </p>
                 </div>
@@ -213,7 +219,7 @@ export default function TakeQuiz() {
           onClick={() => navigate('/student/quizzes')}
           className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition"
         >
-          Retour aux Quizzes
+          Back to Quizzes
         </button>
       </div>
     );
@@ -222,7 +228,7 @@ export default function TakeQuiz() {
   if (questions.length === 0) {
     return (
       <div className="p-6 text-red-500 font-medium">
-        Aucune question disponible pour ce quiz.
+        No questions available for this quiz.
       </div>
     );
   }
@@ -246,21 +252,21 @@ export default function TakeQuiz() {
       }`}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">
-            Quiz: {quiz?.title || 'Sans titre'}
+            Quiz: {quiz?.title || 'Untitled'}
           </h2>
-          
+
           {timeLeft !== null && (
             <div className={`px-3 py-1 rounded-full text-xs font-bold ${
               timeLeft < 60 ? 'bg-rose-500/10 text-rose-500 animate-pulse' : 'bg-amber-500/10 text-amber-500'
             }`}>
-              ⏱️ Temps restant: {formatTime(timeLeft)}
+              ⏱️ Time remaining: {formatTime(timeLeft)}
             </div>
           )}
           <button
             onClick={() => navigate('/student/quizzes')}
             className="text-xs font-semibold text-slate-400 hover:text-slate-500"
           >
-            Quitter
+            Leave
           </button>
         </div>
 
@@ -305,7 +311,7 @@ export default function TakeQuiz() {
           {currentQuestion.type === 'ShortAnswer' && (
             <textarea
               rows={4}
-              placeholder="Tapez votre réponse ici..."
+              placeholder="Type your answer here..."
               value={currentAns.textAnswer || ''}
               onChange={(e) => handleTextAnswerChange(currentQuestion._id, e.target.value)}
               className={`w-full p-4 rounded-xl border text-sm focus:outline-none transition-all ${
@@ -337,7 +343,7 @@ export default function TakeQuiz() {
               disabled={submitting}
               className="px-6 py-2.5 rounded-2xl text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition disabled:opacity-50"
             >
-              {submitting ? 'Envoi...' : 'Terminer & Soumettre'}
+              {submitting ? 'Submitting...' : 'Finish & Submit'}
             </button>
           ) : (
             <button

@@ -15,7 +15,7 @@ export default function ManageQuizQuestions() {
   const [choicesMap, setChoicesMap] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
-
+  
   const [showModal, setShowModal] = useState(false);
   const [editingQuestionId, setEditingQuestionId] = useState(null);
   const [formData, setFormData] = useState({
@@ -25,6 +25,7 @@ export default function ManageQuizQuestions() {
     order: 0,
     choices: [{ text: '', isCorrect: false }, { text: '', isCorrect: false }]
   });
+
   const fetchQuestionsData = async () => {
     try {
       setLoading(true);
@@ -43,7 +44,7 @@ export default function ManageQuizQuestions() {
       }
       setChoicesMap(choicesObj);
     } catch (err) {
-      console.error('Erreur chargement:', err);
+      console.error('Error loading data:', err);
     } finally {
       setLoading(false);
     }
@@ -53,7 +54,6 @@ export default function ManageQuizQuestions() {
     if (quizId) fetchQuestionsData();
   }, [quizId]);
 
-  
   const openCreateModal = () => {
     setEditingQuestionId(null);
     setFormData({
@@ -80,6 +80,7 @@ export default function ManageQuizQuestions() {
     });
     setShowModal(true);
   };
+
   const handleSaveQuestion = async (e) => {
     e.preventDefault();
     try {
@@ -117,13 +118,13 @@ export default function ManageQuizQuestions() {
       setShowModal(false);
       fetchQuestionsData();
     } catch (err) {
-      console.error('Erreur enregistrement:', err);
-      alert('Erreur lors de la sauvegarde.');
+      console.error('Error saving question:', err);
+      alert('Error occurred while saving.');
     }
   };
 
   const handleDeleteQuestion = async (qId) => {
-    if (!window.confirm('Voulez-vous supprimer cette question ?')) return;
+    if (!window.confirm('Are you sure you want to delete this question?')) return;
     try {
       await api.delete(`/questions/${qId}`);
       fetchQuestionsData();
@@ -133,7 +134,7 @@ export default function ManageQuizQuestions() {
   };
 
   const handleDeleteChoice = async (choiceId) => {
-    if (!window.confirm('Supprimer ce choix ?')) return;
+    if (!window.confirm('Are you sure you want to delete this choice?')) return;
     try {
       await api.delete(`/choices/${choiceId}`);
       fetchQuestionsData();
@@ -156,11 +157,11 @@ export default function ManageQuizQuestions() {
             onClick={() => navigate('/teacher/quizzes')}
             className="text-xs font-semibold text-blue-500 hover:text-blue-400 mb-1 block"
           >
-            ← Retour aux quizzes
+            ← Back to Quizzes
           </button>
-          <h2 className="text-xl font-bold">Gestion des Questions</h2>
+          <h2 className="text-xl font-bold">Manage Questions</h2>
         </div>
-
+        
         <div className="flex items-center gap-3">
           <input
             type="text"
@@ -179,13 +180,14 @@ export default function ManageQuizQuestions() {
           </button>
         </div>
       </div>
+
       {loading ? (
-        <div className="text-center py-8 text-slate-400 text-sm">Chargement...</div>
+        <div className="text-center py-8 text-slate-400 text-sm">Loading...</div>
       ) : filteredQuestions.length === 0 ? (
         <div className={`p-8 text-center rounded-2xl border ${
           isDark ? 'bg-[#0B132B] border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-500'
         }`}>
-          Aucune question trouvée.
+          No questions found.
         </div>
       ) : (
         <div className="space-y-4">
@@ -203,6 +205,7 @@ export default function ManageQuizQuestions() {
           ))}
         </div>
       )}
+
       <QuestionModal
         show={showModal}
         onClose={() => setShowModal(false)}

@@ -27,8 +27,14 @@ export default function Header() {
           : 'Manage and organize your courses'
       };
     }
-
-    
+  
+    if (path.includes('/Certificates')) {
+      return {
+        title: 'Certificates',
+        subtitle: 'Your achievements ' 
+          
+      };
+    }
   
     if (path.includes('/quizzes')) {
       return {

@@ -14,7 +14,7 @@ import Departements from'./pages/Departements';
 import TakeQuiz from './pages/QuestionsDetails/TakeQuiz';
 import ManageQuizQuestions from './pages/QuestionsDetails/ManageQuizQuestions';
 import ViewAttemptResult from './pages/QuestionsDetails/ViewAttemptResult';
-
+import Certificates from './pages/Certificates';
 
 import CourseDetails from'./pages/CourseDetails/CourseDetails';
 
@@ -49,7 +49,7 @@ function App() {
         <Route path="/student/Quizzes/:id" element={<TakeQuiz />} />
         <Route path="/teacher/Quizzes/:quizId/questions" element={<ManageQuizQuestions />} />
         <Route path="/student/attempts/:attemptId" element={<ViewAttemptResult />} />
-        
+        <Route path="student/Certificates" element={<Certificates />} />
       </Route>
     </Routes>
   );

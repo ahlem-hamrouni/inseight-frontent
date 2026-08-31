@@ -21,7 +21,7 @@ export default function ViewAttemptResult() {
           setAttemptData(res.data);
         }
       } catch (err) {
-        console.error("Erreur récuperation attempt:", err);
+        console.error("Error fetching attempt details:", err);
       } finally {
         setLoading(false);
       }
@@ -30,8 +30,8 @@ export default function ViewAttemptResult() {
     if (attemptId) fetchAttemptDetails();
   }, [attemptId]);
 
-  if (loading) return <div className="p-8 text-center">Chargement des résultats...</div>;
-  if (!attemptData) return <div className="p-8 text-center text-red-500">Résultat introuvable.</div>;
+  if (loading) return <div className="p-8 text-center">Loading results...</div>;
+  if (!attemptData) return <div className="p-8 text-center text-red-500">Result not found.</div>;
 
   const { attempt, answers } = attemptData;
 
@@ -41,20 +41,20 @@ export default function ViewAttemptResult() {
     }`}>
       <div className="flex justify-between items-center border-b pb-4 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold">{attempt?.quiz?.title || 'Détails du Quiz'}</h1>
-          <p className="text-xs text-slate-400">Passe le: {new Date(attempt?.submittedAt).toLocaleString()}</p>
+          <h1 className="text-2xl font-bold">{attempt?.quiz?.title || 'Quiz Details'}</h1>
+          <p className="text-xs text-slate-400">Taken on: {new Date(attempt?.submittedAt).toLocaleString()}</p>
         </div>
         <div className="text-right">
           <span className="text-2xl font-extrabold text-blue-500">{attempt?.score} pts</span>
-          <p className="text-xs text-slate-400">Durée: {attempt?.duration} sec</p>
+          <p className="text-xs text-slate-400">Duration: {attempt?.duration} sec</p>
         </div>
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Récapitulatif des questions:</h3>
+        <h3 className="text-lg font-semibold">Questions Summary:</h3>
         {answers?.map((ans, idx) => {
           const isCorrect = ans.isCorrect;
-          const userChoice = ans.selectedChoice?.text || ans.textAnswer || "Aucune réponse";
+          const userChoice = ans.selectedChoice?.text || ans.textAnswer || "No answer provided";
 
           return (
             <div 
@@ -72,7 +72,7 @@ export default function ViewAttemptResult() {
                 </span>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                <span className="font-medium text-slate-700 dark:text-slate-300">Votre réponse: </span> 
+                <span className="font-medium text-slate-700 dark:text-slate-300">Your answer: </span> 
                 {userChoice}
               </p>
             </div>
@@ -82,9 +82,9 @@ export default function ViewAttemptResult() {
 
       <button
         onClick={() => navigate(-1)}
-        className="w-full py-3 rounded-xl bg-slate-200 dark:bg-slate-800 font-medium transition"
+        className="w-full py-3 rounded-xl bg-slate-200 dark:bg-slate-800 font-medium transition hover:bg-slate-300 dark:hover:bg-slate-700"
       >
-        Retour
+        Back
       </button>
     </div>
   );

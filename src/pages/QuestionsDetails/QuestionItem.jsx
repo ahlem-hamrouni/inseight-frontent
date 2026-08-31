@@ -29,7 +29,6 @@ export default function QuestionItem({
           </h3>
         </div>
 
-        
         <div className="flex items-center gap-2">
           <button
             onClick={() => onEdit(q)}
@@ -46,10 +45,9 @@ export default function QuestionItem({
         </div>
       </div>
 
-      
       {q.type !== 'ShortAnswer' && (
         <div className="mt-4 pt-4 border-t border-slate-800/50 space-y-2">
-          <p className="text-xs text-slate-400 font-medium">Options de réponse :</p>
+          <p className="text-xs text-slate-400 font-medium">Answer options:</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {choices.map((c) => (
               <div
@@ -62,7 +60,7 @@ export default function QuestionItem({
                     : 'border-slate-200 bg-slate-50 text-slate-700'
                 }`}
               >
-                <span>{c.text} {c.isCorrect && '✓ (Correcte)'}</span>
+                <span>{c.text} {c.isCorrect && '✓ (Correct)'}</span>
                 <button
                   onClick={() => onDeleteChoice(c._id)}
                   className="text-slate-500 hover:text-rose-500 ml-2"
@@ -76,5 +74,4 @@ export default function QuestionItem({
       )}
     </div>
   );
-}  
-
+}

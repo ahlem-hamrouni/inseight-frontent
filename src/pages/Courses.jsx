@@ -124,9 +124,14 @@ export default function Courses() {
         <div><h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>My Courses</h1></div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="relative flex-1 sm:w-64">
-            <input type="text" placeholder="Search course..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className={`w-full px-4 py-2 text-sm rounded-xl border focus:outline-none transition-all ${isDark ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-400 focus:border-blue-500' : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-blue-500'}`} />
+            <input type="text" placeholder="Search course..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className={`w-full sm:w-64 px-4 py-2 text-xs rounded-xl border focus:outline-none transition-colors ${
+                  isDark 
+                    ? 'bg-[#0B132B] border-slate-800 text-white placeholder-slate-500 focus:border-blue-500' 
+                    : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-blue-500'
+                }`} />
           </div>
-          {user?.role !== 'student' && <button onClick={handleOpenCreate} className="shrink-0 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm transition shadow-sm">New course</button>}
+          {user?.role !== 'student' && <button onClick={handleOpenCreate} className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20"
+>New course</button>}
         </div>
       </div>
 
