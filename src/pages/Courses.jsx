@@ -31,8 +31,10 @@ export default function Courses() {
   const loadCourses = async () => {
     try {
       setLoading(true);
-      const res = await api.get(`/courses/list?page=${page}&limit=3&q=${encodeURIComponent(search)}`);
-      const fetchedCourses = Array.isArray(res.data) ? res.data : (res.data?.data || res.data?.courses || res.data?.cours || []);
+      const studentLevel = user?.role === 'student' ? (user?.level || user?.niveau || '') : '';
+      const res = await api.get(
+        `/courses/list?page=${page}&limit=3&q=${encodeURIComponent(search)}&level=${encodeURIComponent(studentLevel)}`
+      );      const fetchedCourses = Array.isArray(res.data) ? res.data : (res.data?.data || res.data?.courses || res.data?.cours || []);
       const totalPages = res.data?.pages || res.data?.totalPages || 1;
       const backendEnrolledIds = fetchedCourses.filter(c => c.isEnrolled).map(c => String(c._id || c.id));
      setEnrolledCourseIds(backendEnrolledIds);
@@ -130,8 +132,7 @@ export default function Courses() {
                     : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-blue-500'
                 }`} />
           </div>
-          {user?.role !== 'student' && <button onClick={handleOpenCreate} className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20"
->New course</button>}
+          {user?.role !== 'student' && <button onClick={handleOpenCreate} className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20">New course</button>}
         </div>
       </div>
 

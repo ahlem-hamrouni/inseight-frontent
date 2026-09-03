@@ -70,15 +70,21 @@ export default function CourseModal({
           </label>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="text-sm">
-              <span className="mb-2 block font-medium">Level</span>
-              <input
-                name="level"
-                value={form.level}
-                onChange={handleChange}
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 px-3 py-2 text-sm focus:outline-none"
-              />
-            </label>
+            <div className="text-sm">
+              <label className="mb-2 block font-medium">Level</label>
+              <select
+                    name="level"
+                    value={form.level}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 px-3 py-2 text-sm focus:outline-none"
+                  >
+                    <option value="L1">L1</option>
+                    <option value="L2">L2</option>
+                    <option value="L3">L3</option>
+                    <option value="M1">M1</option>
+                    <option value="M2">M2</option>
+                  </select>
+            </div>
 
             <label className="text-sm">
               <span className="mb-2 block font-medium">Course Image URL</span>

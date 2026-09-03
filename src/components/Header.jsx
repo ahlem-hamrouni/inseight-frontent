@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import RecommendationBell from './recommendations/RecommendationBell';
 
 export default function Header() {
   const { user, theme } = useAuth();
@@ -10,14 +11,14 @@ export default function Header() {
   const getHeaderTitle = () => {
     const path = location.pathname;
     const isStudent = user?.role === 'student';
-    const isTeacher = user?.role ==='teacher';
+    const isTeacher = user?.role === 'teacher';
 
     if (path.includes('/quizzes/') && !path.endsWith('/quizzes')) {
-    return {
-    title: 'Quizzes & Exams',
-    subtitle: 'Take exams and view your grades'
-  };
-}
+      return {
+        title: 'Quizzes & Exams',
+        subtitle: 'Take exams and view your grades'
+      };
+    }
     
     if (path.includes('/courses')) {
       return {
@@ -31,8 +32,7 @@ export default function Header() {
     if (path.includes('/Certificates')) {
       return {
         title: 'Certificates',
-        subtitle: 'Your achievements ' 
-          
+        subtitle: 'Your achievements' 
       };
     }
   
@@ -45,24 +45,24 @@ export default function Header() {
       };
     }
 
-   
     if (path.includes('/users')) {
       return {
         title: isTeacher 
-        ? ' My students'
-        : " All users"
-        
+          ? 'My students'
+          : 'All users'
       };
     }
-    if ( path.includes('/docs')){
+
+    if (path.includes('/docs')) {
       return { 
         title: 'Documents'
       };
     }
-    if ( path. includes('dept')){
-      return{
-        title:"Departments"
-      }
+
+    if (path.includes('dept')) {
+      return {
+        title: 'Departments'
+      };
     }
    
     return {
@@ -76,7 +76,7 @@ export default function Header() {
   const currentHeader = getHeaderTitle();
 
   return (
-    <header className={`flex items-center justify-between px-8 py-4 border-b transition-colors duration-200 backdrop-blur-md ${
+    <header className={`relative z-40 flex items-center justify-between px-8 py-4 border-b transition-colors duration-200 backdrop-blur-md ${
       isDark 
         ? 'bg-[#060B19]/50 border-slate-800/80 text-white' 
         : 'bg-white/80 border-slate-200 text-slate-800'
@@ -93,12 +93,10 @@ export default function Header() {
         )}
       </div>
 
-      
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-500/20">
-          {user?.firstName ? user.firstName[0].toUpperCase() : 'M'}
-          {user?.lastName ? user.lastName[0].toUpperCase() : 'B'}
-        </div>
+        {user?.role === 'student' && (
+          <RecommendationBell studentId={user?._id || user?.id} />
+        )}
       </div>
     </header>
   );

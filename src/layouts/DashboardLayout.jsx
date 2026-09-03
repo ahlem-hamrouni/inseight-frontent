@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import ChatbotButton from '../components/ai/ChatbotButton';
 import Chatbot from '../components/ai/Chatbot';
 import { useCurrentStudent } from '../hooks/useCurrentStudent';
+
 const menusByRole = {
   teacher: [
     { label: 'Dashboard', link: '/teacher/TeacherDashboard' },
@@ -34,29 +35,27 @@ const menusByRole = {
 export default function DashboardLayout() {
   const { user, theme } = useAuth();
   const isDark = theme === 'dark';
-  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const currentRole = user?.role;
   const currentMenus = menusByRole[currentRole];
 
   const student = useCurrentStudent(); 
-  const [isOpen, setIsOpen ]= useState (false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className={`min-h-screen flex transition-colors duration-200 relative ${
       isDark ? 'bg-[#060B19] text-white' : 'bg-slate-100 text-slate-900'
     }`}>
-
       <Sidebar menus={currentMenus} title={currentRole?.toUpperCase()} />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 relative">
         <Header user={user} />
         <main className="p-8 flex-1 overflow-y-auto">
           <Outlet />
-        </main> <Chatbot studentId={user?._id || user?.id} isOpen={isOpen} onClose={() => setIsOpen(false)} /> <ChatbotButton open= {isOpen} onClick={() => setIsOpen((value) => ! value)}/>
+        </main> 
+        <Chatbot studentId={user?._id || user?.id} isOpen={isOpen} onClose={() => setIsOpen(false)} /> 
+        <ChatbotButton open={isOpen} onClick={() => setIsOpen((value) => !value)}/>
       </div>
-
-      
     </div>
   );
 }

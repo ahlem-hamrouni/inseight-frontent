@@ -115,7 +115,9 @@ export default function CourseCard({
 
         <div className="pt-3 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
           <span className="font-medium bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
-            {course.level || course.niveau || 'Intermediate'}
+            {typeof course.level === 'object' && course.level !== null
+        ? course.level.name || course.level.enum || JSON.stringify(course.level)
+        : course.level}
           </span>
           <span className="font-medium bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
             {course.duration || '1 month'}
