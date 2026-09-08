@@ -5,6 +5,8 @@ export default function CourseModal({
   isEditing,
   isDark,
   form,
+  departements, 
+  user,
   submitting,
   submitError,
   closeModal,
@@ -74,7 +76,7 @@ export default function CourseModal({
               <label className="mb-2 block font-medium">Level</label>
               <select
                     name="level"
-                    value={form.level}
+                    value={form.level || 'L1'}
                     onChange={handleChange}
                     className="w-full rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 px-3 py-2 text-sm focus:outline-none"
                   >
@@ -85,6 +87,25 @@ export default function CourseModal({
                     <option value="M2">M2</option>
                   </select>
             </div>
+            {user?.role === 'admin' && (
+            <div className="text-sm mt-4">
+              <label className="mb-2 block font-medium">Département</label>
+              <select
+                    name="departement"
+                    value={form.departement}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 px-3 py-2 text-sm focus:outline-none"
+                    required
+                  >
+                    <option value="">Sélectionner un département</option>
+                   {departements?.map((dept) => (
+                      <option key={dept._id || dept.id} value={dept._id || dept.id}>
+                        {dept.name || dept.nom || dept.title}
+                      </option>
+                    ))}
+               </select>
+            </div>
+            )}
 
             <label className="text-sm">
               <span className="mb-2 block font-medium">Course Image URL</span>

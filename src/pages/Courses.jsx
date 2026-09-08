@@ -6,7 +6,7 @@ import Pagination from '../components/Pagination';
 import CourseCard from '../components/CourseCard';
 import CourseModal from '../components/CourseModal';
 
-const initialForm = { title: '', description: '', departement: '', level: '', duration: '', image: '' };
+const initialForm = { title: '', description: '', departement: '', level: 'L1', duration: '', image: '' };
 
 export default function Courses() {
   const { user, theme } = useAuth();
@@ -15,6 +15,7 @@ export default function Courses() {
 
   const [courses, setCourses] = useState([]);
   const [enrolledCourseIds, setEnrolledCourseIds] = useState([]);
+  const [departements, setDepartements] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -47,6 +48,24 @@ export default function Courses() {
   };
 
   useEffect(() => { loadCourses(); }, [user, page, search]);
+  
+  const fetchDepartements = async () => {
+    if (user?.role !== 'admin') return; 
+    
+    try {
+      const res = await api.get('/departements/list?limit=1000');
+      
+      const data = Array.isArray(res.data) 
+        ? res.data 
+        : (res.data?.data || res.data?.departements || res.data?.departement || []);
+        
+      setDepartements(data);
+    } catch (err) {
+      console.error('Error loading departements:', err);
+    }
+  };
+  useEffect(() => { fetchDepartements();},[user]);
+  
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -77,19 +96,26 @@ export default function Courses() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title || !form.description || !form.duration || !form.level) 
-      return setSubmitError('Please fill in title, description, duration, and level.');
-    setSubmitting(true); setSubmitError('');
+    const selectedDepartement = user?.role === 'admin' ? form.departement : (user?.departement?._id || user?.departement);
+    if (!form.title || !form.description || !form.duration || !form.level) { return setSubmitError('Please fill in title, description, duration, and level.');}
+    if (user?.role === 'admin' && !selectedDepartement) { return setSubmitError('Please select a département.');}
+    setSubmitting(true);
+    setSubmitError('');
+    const payload = {...form, teacher: user?._id || user?.id, departement: selectedDepartement, };
     try {
       if (isEditing) {
-        await api.put(`/courses/${currentCourseId}`, { ...form, teacher: user?._id || user?.id, departement: user?.departement?._id || user?.departement });
+        await api.put(`/courses/${currentCourseId}`, payload);
       } else {
-        await api.post('/courses/create', { ...form, teacher: user?._id || user?.id, departement: user?.departement?._id || user?.departement, image: form.image || 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80' });
+        await api.post('/courses/create', {
+        ...payload });
       }
-      closeModal(); await loadCourses();
+      closeModal();
+      await loadCourses();
     } catch (err) {
       setSubmitError(err.response?.data?.message || 'Error saving course.');
-    } finally { setSubmitting(false); }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleDelete = async (courseId) => {
@@ -157,7 +183,7 @@ export default function Courses() {
         </div>
       )}
 
-      <CourseModal showModal={showModal} isEditing={isEditing} isDark={isDark} form={form} submitting={submitting} submitError={submitError} closeModal={closeModal} handleSubmit={handleSubmit} handleChange={handleChange} />
+      <CourseModal showModal={showModal} isEditing={isEditing} isDark={isDark} form={form} departements={departements} user={user} submitting={submitting} submitError={submitError} closeModal={closeModal} handleSubmit={handleSubmit} handleChange={handleChange} />
     </div>
   );
 }
