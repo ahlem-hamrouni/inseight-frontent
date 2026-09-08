@@ -43,7 +43,7 @@ export default function DashboardLayout() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={`min-h-screen flex transition-colors duration-200 relative ${
+    <div className={`min-h-screen flex  flex-col lg:flex-row transition-colors duration-200 relative ${
       isDark ? 'bg-[#060B19] text-white' : 'bg-slate-100 text-slate-900'
     }`}>
       <Sidebar menus={currentMenus} title={currentRole?.toUpperCase()} />

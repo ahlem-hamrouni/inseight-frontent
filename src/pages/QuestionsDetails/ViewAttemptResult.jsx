@@ -81,7 +81,7 @@ export default function ViewAttemptResult() {
       </div>
 
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/student/quizzes')}
         className="w-full py-3 rounded-xl bg-slate-200 dark:bg-slate-800 font-medium transition hover:bg-slate-300 dark:hover:bg-slate-700"
       >
         Back

@@ -25,9 +25,7 @@ export default function TakeQuiz() {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        setLoading(true);
-
-       
+        setLoading(true); 
         const quizRes = await api.get(`/quizzes/${quizId}`);
         const fetchedQuiz = quizRes.data?.quiz || quizRes.data;
         setQuiz(fetchedQuiz);
@@ -139,6 +137,9 @@ export default function TakeQuiz() {
         startedAt,
         answers: formattedAnswers
       });
+      if (res.data?.attempt?._id) {
+      navigate(`/student/attempts/${res.data.attempt._id}`);
+      }
 
       if (res.data?.isEmpty) {
         alert('Aucune réponse enregistrée.');
@@ -163,76 +164,7 @@ export default function TakeQuiz() {
     );
   }
 
-  if (resultSummary) {
-    const score = resultSummary.attempt?.score ?? resultSummary.score ?? 0;
-    const submittedAnswers = resultSummary.answers || [];
-
-    return (
-      <div className={`max-w-2xl mx-auto p-8 rounded-3xl border space-y-6 ${
-        isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-100 text-slate-900 shadow-sm'
-      }`}>
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Quiz Results</h2>
-          <div className="p-6 rounded-2xl bg-blue-500/10 border border-blue-500/20 max-w-xs mx-auto">
-            <p className="text-sm text-slate-400 mb-1">Your Final Score</p>
-            <p className="text-4xl font-extrabold text-blue-500">{score} pts</p>
-          </div>
-        </div>
-
-        {submittedAnswers.length > 0 && (
-          <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
-            <h3 className="text-lg font-semibold mb-2">Answer Details:</h3>
-            {submittedAnswers.map((ans, idx) => {
-              const qText = ans.question?.statement || `Question ${idx + 1}`;
-              const isCorrect = ans.isCorrect;
-              const userChoice = ans.selectedChoice?.text || ans.textAnswer || "No answer provided";
-
-              return (
-                <div 
-                  key={ans._id || idx} 
-                  className={`p-4 rounded-2xl border ${
-                    isCorrect 
-                      ? 'border-emerald-500/30 bg-emerald-500/5' 
-                      : 'border-rose-500/30 bg-rose-500/5'
-                  }`}
-                >
-                  <div className="flex justify-between items-start gap-2 mb-2">
-                    <p className="font-semibold text-sm">{idx + 1}. {qText}</p>
-                    <span className={`text-xs px-2.5 py-1 rounded-full font-bold ${
-                      isCorrect ? 'bg-emerald-500/20 text-emerald-500' : 'bg-rose-500/20 text-rose-500'
-                    }`}>
-                      {isCorrect ? `+${ans.pointsEarned || 0} pts` : '0 pt'}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    <span className="font-medium text-slate-700 dark:text-slate-300">Your answer: </span> 
-                    {userChoice}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        <button
-          onClick={() => navigate('/student/quizzes')}
-          className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition"
-        >
-          Back to Quizzes
-        </button>
-      </div>
-    );
-  }
-
-  if (questions.length === 0) {
-    return (
-      <div className="p-6 text-red-500 font-medium">
-        No questions available for this quiz.
-      </div>
-    );
-  }
-
+  
   const currentQuestion = questions[currentIndex];
   const totalQuestions = questions.length;
   const progressPercentage = ((currentIndex + 1) / totalQuestions) * 100;

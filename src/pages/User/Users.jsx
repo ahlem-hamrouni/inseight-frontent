@@ -16,7 +16,7 @@ const initialForm = {
   role: 'student',
   studentCode: '',
   level: 'L1',
-  group: '', // 
+  group: '',  
   speciality: '',
   office: '',
   departement: '',
@@ -46,7 +46,7 @@ export default function Users() {
 
   const fetchDepartements = async () => {
     try {
-      const res = await api.get('/departements/list');
+      const res = await api.get('/departements/list?page=${page}&limit=5');
       setDepartements(res.data.departements || res.data || []);
     } catch (err) {
       console.error('Erreur chargement départements:', err);

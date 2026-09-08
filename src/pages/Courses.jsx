@@ -34,7 +34,8 @@ export default function Courses() {
       const studentLevel = user?.role === 'student' ? (user?.level || user?.niveau || '') : '';
       const res = await api.get(
         `/courses/list?page=${page}&limit=3&q=${encodeURIComponent(search)}&level=${encodeURIComponent(studentLevel)}`
-      );      const fetchedCourses = Array.isArray(res.data) ? res.data : (res.data?.data || res.data?.courses || res.data?.cours || []);
+      );     
+      const fetchedCourses = Array.isArray(res.data) ? res.data : (res.data?.data || res.data?.courses || res.data?.cours || []);
       const totalPages = res.data?.pages || res.data?.totalPages || 1;
       const backendEnrolledIds = fetchedCourses.filter(c => c.isEnrolled).map(c => String(c._id || c.id));
      setEnrolledCourseIds(backendEnrolledIds);

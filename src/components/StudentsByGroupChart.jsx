@@ -19,7 +19,7 @@ export default function StudentsByGroupChart({ data = [] }) {
   };
 
   const options = {
-    responsive: true,
+    responsive: true, 
     maintainAspectRatio: false,
     plugins: {
       legend: { position: 'bottom', labels: { color: '#94A3B8' } },
